@@ -116,3 +116,70 @@ Drasner says that `ease-out` functions are great for enterances, and `ease-in` i
 Using `transform-origin: 50% 50%;` seems to be about the same as `center center` but I could be wrong on that. 
 
 **QuickTip:** There are issues across browsers with animating SVGs, but GreenSock clears up a lot of those cross browser issues for you. 
+
+## Chapter 6: Animating Data Visualizations
+
+Recommends [Chartist](https://gionkunz.github.io/chartist-js/) and [D3](https://d3js.org/). Chartist doesn't seem to be kept up with lately.
+
+We can use animation in Data-Viz with:
+* Filtering
+* Reordering
+* Storytelling
+* SHowing change over time
+* Staggering pieces for clarity
+
+Filtering can show what you want to talk about while retaining context.
+
+Links to a video on [Storytelling in Data Viz](https://www.youtube.com/watch?v=cmmjTLCyqlY)
+
+
+## Chapter 8: Animating with GreenSock
+
+Using a library called GreenSock that makes animating with SVG much easier. 
+
+You can get the library at `https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js` or with `npm install gsap`
+
+First bit of GreenSock code:
+```javascript
+TweenMax.to(".element", 2, { x:100 });
+```
+
+### TweenMax basics
+`TweenMax` is the library we're bringing in, and can be swapped out for `TweenLite` if we're using the smaller bundle.
+
+`TweenMax` has loops, CSS properties, and TimelineMax library. 
+
+`.to` is what tells the element where to go. You also have:
+`.from` and `.fromTo`.
+
+`.fromTo` is pretty useful for making sure retriggers work well, especially with relative changes. Here's `.fromTo`:
+
+```javascript
+TweenMax.fromTo(".element", 2, {
+	x: 0
+}, {
+	  x: 100
+});
+}
+})
+```
+
+### Staggering
+We can also use `.staggerTo`, `.staggerFrom`, or `.staggerFromTo`. 
+
+This gives the nice cascade that we get when we fire animations after one another, rather than all together. 
+
+```javascript
+TweenMax.staggerFromTo(".element circle", 2, {
+	x: 0
+}, {
+	  x: 100
+}, 0.1);
+```
+
+These functions take the element as the first argument, the duration as the second, then an object with the properties we're changing as the third. If there's a `FromTo` it'll take two objects.
+
+### Easing
+To add Easing, just add another property to the javascript object. `ease: Sine.easeOut`. 
+
+Remember, it's counter intuitive for which ease is best for which situation. `EaseOut` is better for enterances. `EaseIn` is better for exits. That's because the `out` in `EaseOut` refers to the end of the animation. It's quick to start and slow to end. Then you want to reverse that, and get the object off the page quick.
