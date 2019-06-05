@@ -193,3 +193,28 @@ These functions take the element as the first argument, the duration as the seco
 To add Easing, just add another property to the javascript object. `ease: Sine.easeOut`.
 
 Remember, it's counter intuitive for which ease is best for which situation. `EaseOut` is better for enterances. `EaseIn` is better for exits. That's because the `out` in `EaseOut` refers to the end of the animation. It's quick to start and slow to end. Then you want to reverse that, and get the object off the page quick.
+
+## Chapter 9: GreenSock's Timeline
+
+To have one animation fire after the last, you use `TimelineMax()`
+
+Makes it really easy to order animations one after another. You can have multiple timelines going and firing at the same time to create more randomized animations. 
+
+If you want something to move slightly before another thing is done, use *relative incrementation*. 
+
+```
+tl.to(".pinball .plunger", 3, {y:200,ease: Sine.easeIn})
+  .to(".pinball .plunger", .2, {y:0, ease: Sine.linear})
+  .to(".pinball .ball", 1, {y:-200, ease: Sine.linear}, "-=1")
+  .to(".pinball .ball", 2, {})
+  .to(".pinball .ball", 1.5, {y:0, ease: Sine.easeOut})
+```
+
+The little "-=1" there is what makes it start 1 second before it normally would, when the previous command ends. The next one still starts when this one finishes, it doesn't throw off the full chain. 
+
+If you want multiple animations to fire after one finishes, use a *relative label*.
+
+`tl.add("burst")` creates the relative label `burst`.
+
+Then on our elements we just put `"burst"` as the last argument in our `tl.to()` function.
+
