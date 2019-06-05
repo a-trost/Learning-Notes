@@ -202,7 +202,7 @@ Makes it really easy to order animations one after another. You can have multipl
 
 If you want something to move slightly before another thing is done, use *relative incrementation*. 
 
-```
+```javascript
 tl.to(".pinball .plunger", 3, {y:200,ease: Sine.easeIn})
   .to(".pinball .plunger", .2, {y:0, ease: Sine.linear})
   .to(".pinball .ball", 1, {y:-200, ease: Sine.linear}, "-=1")
@@ -212,9 +212,69 @@ tl.to(".pinball .plunger", 3, {y:200,ease: Sine.easeIn})
 
 The little "-=1" there is what makes it start 1 second before it normally would, when the previous command ends. The next one still starts when this one finishes, it doesn't throw off the full chain. 
 
+### Relative Label
+
 If you want multiple animations to fire after one finishes, use a *relative label*.
 
 `tl.add("burst")` creates the relative label `burst`.
 
 Then on our elements we just put `"burst"` as the last argument in our `tl.to()` function.
 
+We can use this to refer to the specific animation.
+
+### Nested and Master Timelines
+
+Drasner recommends using timelines rather than tossing a bunch of animations into global scope. It makes working with scenes much easier.
+
+```javascript
+function sceneOne() {
+  var tl = new TimelineMax();
+    tl.add("begin");
+    tl.to(".bubble", 2, {
+      scale:3,
+      opacity: 0.5,
+      rotation: 90,
+      ease: Circ.easeOut  
+      }, "begin");
+      ...
+      return tl;
+}
+
+var master = new TimelineMax();
+master.add(sceneOne(), "scene1");
+```
+
+Let's break that down. Create a scene function, make a `TimelineMax` instance inside that, then add a relative label `th.add("begin")` like when we added `"burst"` before. 
+
+### Yoyos and Loops
+
+I went ahead of the book a little and picked up some of this stuff to complete some animation tasks I did. There are a couple gotchas with these.
+
+We add `repeat` and `yoyo` to our object, just like with `scale`, `rotation`, etc. 
+
+For loops we just add `repeat:-1` to make it loop forever. Any other number will repeat that number of times. Default is `0`.
+
+We add `yoyo: true` if we want the animation to go forwards, backwards, forwards, etc.
+
+For `yoyo` it's helpful to use `fromTo()` as well as an `easeInOut` if you want it to seem pretty seamless. 
+
+### Using Random with Animations
+
+You can have a random value for your rotation animation by using `rotation: Math.random() * 360`. Lots of other places you can put that. 
+
+### Function Callbacks
+
+We can use callbacks at different times in the animation to trigger something else. 
+
+Here's a callback with a random effect.
+
+```javascript
+function _flyBy(el) {
+  TweenMax.to(el, amt, {
+    x: Math.random() * 400 - 200,
+    rotation: Math.random() * 360,
+    onComplete: _flyBy,
+    onCompleteParams: [el]
+  });
+}
+```
